@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Yuuka567 的 hub</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        boxShadow: {
+          macMenu: "0 18px 36px -18px rgba(31, 47, 70, 0.28)",
+          floatBtn: "0 10px 30px -10px rgba(0, 122, 255, 0.4)",
+        },
+        fontFamily: {
+          sans: [
+            "-apple-system",
+            "BlinkMacSystemFont",
+            "SF Pro Display",
+            "SF Pro Text",
+            "system-ui",
+            "sans-serif",
+          ],
+        },
+        keyframes: {
+          navReveal: {
+            "0%": { opacity: "0", transform: "translateY(-14px) scale(0.98)" },
+            "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+          },
+          titleReveal: {
+            "0%": { opacity: "0", transform: "translateY(30px) scale(0.96)" },
+            "60%": { opacity: "1", transform: "translateY(-6px) scale(1.01)" },
+            "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+          },
+          subtitleReveal: {
+            "0%": { opacity: "0", transform: "translateY(20px)" },
+            "100%": { opacity: "1", transform: "translateY(0)" },
+          },
+          floatIn: {
+            "0%": { opacity: "0", transform: "translateY(24px) scale(0.96)" },
+            "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+          },
+          breathe: {
+            "0%, 100%": { transform: "scale(1)" },
+            "50%": { transform: "scale(1.03)" },
+          },
+          shimmer: {
+            "0%": { backgroundPosition: "-200% 0" },
+            "100%": { backgroundPosition: "200% 0" },
+          },
+        },
+        animation: {
+          navReveal: "navReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) both",
+          titleReveal: "titleReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both",
+          subtitleReveal: "subtitleReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both",
+          floatIn: "floatIn 1s cubic-bezier(0.22, 1, 0.36, 1) both",
+          breathe: "breathe 6s ease-in-out infinite",
+          shimmer: "shimmer 6s linear infinite",
+        },
+      },
+    }
+  };
+</script>
+
+<style type="text/tailwindcss">
+@layer utilities {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html, body {
+    overscroll-behavior: none;
+  }
+
+  body {
+    font-family: "-apple-system", "BlinkMacSystemFont", "SF Pro Display", "SF Pro Text", "system-ui", sans-serif;
+    background-color: #fbfbfd;
+    color: #1d1d1f;
+  }
+
+  /* 背景层 */
+  .hero-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    background-image: url('image/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: transform;
+  }
+
+  /* Canvas粒子画布 */
+  #particleCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: -5;
+    pointer-events: none;
+  }
+
+  /* 顶部柔光 */
+  .hero-light {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(1000px 500px at 20% 20%, rgba(255, 255, 255, 0.9), transparent 60%),
+      radial-gradient(800px 400px at 80% 30%, rgba(210, 230, 255, 0.55), transparent 60%),
+      radial-gradient(700px 400px at 50% 80%, rgba(255, 240, 230, 0.45), transparent 60%);
+    pointer-events: none;
+  }
+
+  /* 渐变遮罩 */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.12) 40%, rgba(255, 255, 255, 0.55) 100%);
+    pointer-events: none;
+  }
+
+  /* 底部白色过渡 */
+  .hero-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 220px;
+    background: linear-gradient(180deg, transparent 0%, #fbfbfd 100%);
+    pointer-events: none;
+  }
+
+  /* 顶部导航 */
+  .apple-nav-blur {
+    background: rgba(251, 251, 253, 0.72);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px -12px rgba(31, 47, 70, 0.18);
+  }
+
+  /* 标题深色微光 */
+  .title-shimmer {
+    background: linear-gradient(
+      90deg,
+      #1d1d1f 0%,
+      #1d1d1f 40%,
+      #4a6ea8 50%,
+      #1d1d1f 60%,
+      #1d1d1f 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 6s linear infinite;
+  }
+
+  /* 主按钮 */
+  .apple-btn {
+    @apply px-5 py-2.5 rounded-full text-white text-sm font-medium;
+    background: linear-gradient(135deg, #3a8cff 0%, #005fcc 100%);
+    box-shadow: 0 10px 30px -10px rgba(0, 122, 255, 0.45);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .apple-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 18px 40px -10px rgba(0, 122, 255, 0.55);
+    background: linear-gradient(135deg, #4d9bff 0%, #006dde 100%);
+  }
+
+  .apple-btn:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 0.2s;
+  }
+
+  /* 描边按钮 */
+  .apple-btn-outline {
+    @apply px-5 py-2.5 rounded-full text-sm font-medium text-[#1d1d1f];
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .apple-btn-outline:hover {
+    transform: translateY(-2px) scale(1.02);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .apple-btn-outline:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 0.2s;
+  }
+
+  /* 搜索按钮 */
+  .search-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .search-btn:hover {
+    transform: scale(1.08);
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.35);
+  }
+
+  /* 下拉菜单 */
+  .mac-dropdown {
+    position: relative;
+  }
+
+  .mac-dropdown-menu {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    min-width: 170px;
+    padding: 6px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    box-shadow: 0 18px 36px -18px rgba(31, 47, 70, 0.28);
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 60;
+  }
+
+  .mac-dropdown:hover .mac-dropdown-menu,
+  .mac-dropdown:focus-within .mac-dropdown-menu {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .mac-dropdown-item {
+    display: block;
+    padding: 9px 12px;
+    font-size: 13px;
+    color: rgba(29, 29, 31, 0.78);
+    border-radius: 10px;
+    transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                padding 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .mac-dropdown-item:hover {
+    background: rgba(0, 122, 255, 0.08);
+    color: #1d1d1f;
+    padding-left: 14px;
+  }
+
+  /* 底部按钮容器 */
+  .float-btn {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .float-btn.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 自定义光标跟随微光 */
+  .cursor-light {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(0, 122, 255, 0.08), transparent 60%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
+}
+</style>
+</head>
+
+<body>
+<canvas id="particleCanvas"></canvas>
+  <!-- 鼠标跟随微光 -->
+  <div class="cursor-light" id="cursorLight"></div>
+
+  <!-- 背景层 -->
+  <div class="hero-bg" id="heroBg">
+    <div class="hero-light"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-fade"></div>
+  </div>
+
+  <!-- 顶部导航 -->
+  <nav class="fixed top-0 left-0 right-0 z-50 apple-nav-blur animate-navReveal">
+    <div class="max-w-[980px] mx-auto px-5 h-[44px] flex items-center justify-between">
+      <a href="#top" class="text-[15px] font-medium text-[#1d1d1f] tracking-tight">Jiangyin</a>
+
+      <div class="flex items-center gap-[28px] text-[13px] text-[#1d1d1f]/70">
+        <div class="mac-dropdown">
+          <span class="cursor-pointer hover:text-[#1d1d1f] transition-colors duration-500">项目 ▾</span>
+          <div class="mac-dropdown-menu">
+            <a href="#" class="mac-dropdown-item">CW-GUI</a>
+            <a href="#" class="mac-dropdown-item">Homo-Net / GPNN</a>
+          </div>
+        </div>
+
+        <div class="mac-dropdown">
+          <span class="cursor-pointer hover:text-[#1d1d1f] transition-colors duration-500">讨论 ▾</span>
+          <div class="mac-dropdown-menu">
+            <a href="#" class="mac-dropdown-item">技术交流</a>
+          </div>
+        </div>
+      </div>
+
+      <button class="search-btn flex items-center justify-center">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#1d1d1f]/80">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 主页 -->
+  <section id="top" class="relative min-h-screen flex items-center justify-center">
+    <div class="text-center px-6">
+      <h1 class="title-shimmer animate-titleReveal text-6xl md:text-7xl font-semibold tracking-tight">
+        LcW v3正在开发
+      </h1>
+      <p class="animate-subtitleReveal mt-4 text-lg md:text-xl text-[#1d1d1f]/70 max-w-xl mx-auto">
+        引入全新UI设计与插件，全新视觉动效和动画曲线，新一代桌面端界面式辅助工具
+      </p>
+    </div>
+
+    <!-- 左下按钮 -->
+    <div class="fixed left-8 bottom-8 z-30 float-btn" id="leftBtn">
+      <button class="apple-btn-outline">正在施工的项目</button>
+    </div>
+
+    <!-- 右下按钮 -->
+    <div class="fixed right-8 bottom-8 z-30 float-btn" id="rightBtn">
+      <button href="https://github.com/Yuuka567" target="_blank" class="apple-btn">GitHub仓库</a>
+    </div>
+  </section>
+
+  <script>
+    // 粒子系统
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+    let particles = [];
+    const particleCount = 55;
+
+    function resizeCanvas(){
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle{
+      constructor(){
+        this.x = Math.random()*w;
+        this.y = Math.random()*h;
+        this.r = Math.random()*1.1 +0.15;
+        const angle = Math.random()*Math.PI*2;
+        const speed = Math.random()*0.25+0.06;
+        this.vx = Math.cos(angle)*speed;
+        this.vy = Math.sin(angle)*speed;
+        this.opacity = Math.random()*0.25+0.08;
+      }
+      update(){
+        this.x += this.vx;
+        this.y += this.vy;
+        if(this.x <0) this.x = w;
+        if(this.x>w) this.x = 0;
+        if(this.y<0) this.y = h;
+        if(this.y>h) this.y =0;
+      }
+      draw(){
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+        ctx.fillStyle = `rgba(60, 110, 180, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    for(let i=0;i<particleCount;i++) particles.push(new Particle());
+    function render(){
+      ctx.clearRect(0,0,w,h);
+      particles.forEach(p=>{
+        p.update();
+        p.draw();
+      })
+      requestAnimationFrame(render);
+    }
+    render();
+
+    // 底部按钮入场
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('leftBtn').classList.add('visible');
+      }, 900);
+      setTimeout(() => {
+        document.getElementById('rightBtn').classList.add('visible');
+      }, 900);
+    });
+
+    // 鼠标跟随微光
+    const cursorLight = document.getElementById('cursorLight');
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let lightX = mouseX;
+    let lightY = mouseY;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function updateLight() {
+      lightX += (mouseX - lightX) * 0.18;
+      lightY += (mouseY - lightY) * 0.18;
+      cursorLight.style.transform = `translate(${lightX}px, ${lightY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(updateLight);
+    }
+    updateLight();
+
+    // 视差背景 + 动态模糊
+    const heroBg = document.getElementById('heroBg');
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const y = window.scrollY;
+          heroBg.style.transform = `translateY(${y * 0.35}px)`;
+          heroBg.style.filter = y < 500 ? `blur(${y / 18}px)` : 'blur(28px)';
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // 导航滚动状态
+    const navbar = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navbar.style.background = 'rgba(240, 240, 245, 0.78)';
+      } else {
+        navbar.style.background = 'rgba(251, 251, 253, 0.72)';
+     }
+    });
+  </script>
+
+</body>
+</html>
