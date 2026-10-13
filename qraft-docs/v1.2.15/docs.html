@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qraft · 文档</title>
+<link rel="icon" type="image/x-icon" href="icon/qraft.png" />
+<!--<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236d7cff'/%3E%3Cstop offset='1' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='16' font-weight='bold' fill='white' text-anchor='middle'%3EQ%3C/text%3E%3C/svg%3E">-->
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* ============ 主题变量 ============ */
+:root{
+  --ease-spring: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --accent:#4f6bed;
+  --accent-soft:rgba(79,107,237,.12);
+  --accent-contrast:#fff;
+  --bg:#f3f3f6;
+  --bg-elevated:rgba(255,255,255,.72);
+  --bg-sidebar:rgba(249,249,252,.78);
+  --bg-code:#f6f7f9;
+  --bg-code-header:#eceef2;
+  --bg-hover:rgba(0,0,0,.045);
+  --bg-active:rgba(79,107,237,.12);
+  --text:#1b1b1f;
+  --text-secondary:#5b5b66;
+  --text-muted:#8a8a96;
+  --border:rgba(0,0,0,.08);
+  --border-strong:rgba(0,0,0,.14);
+  --shadow:0 8px 32px rgba(20,22,40,.08);
+  --shadow-sm:0 2px 10px rgba(20,22,40,.06);
+  --kbd-bg:#e9ebf0;
+  --tip-bg:rgba(79,107,237,.08);
+  --warn-bg:rgba(255,159,67,.12);
+  --code-kw:#a855f7;
+  --code-str:#16a34a;
+  --code-num:#ea580c;
+  --code-com:#8a8a96;
+  --code-fn:#2563eb;
+}
+[data-theme="dark"]{
+  --accent:#7d8cff;
+  --accent-soft:rgba(125,140,255,.16);
+  --accent-contrast:#fff;
+  --bg:#1c1c21;
+  --bg-elevated:rgba(40,40,48,.72);
+  --bg-sidebar:rgba(32,32,38,.8);
+  --bg-code:#26262e;
+  --bg-code-header:#2e2e38;
+  --bg-hover:rgba(255,255,255,.06);
+  --bg-active:rgba(125,140,255,.18);
+  --text:#eaeaef;
+  --text-secondary:#a8a8b5;
+  --text-muted:#6f6f7d;
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(255,255,255,.16);
+  --shadow:0 8px 32px rgba(0,0,0,.4);
+  --shadow-sm:0 2px 10px rgba(0,0,0,.3);
+  --kbd-bg:#34343e;
+  --tip-bg:rgba(125,140,255,.14);
+  --warn-bg:rgba(255,159,67,.16);
+  --code-kw:#c4b5fd;
+  --code-str:#86efac;
+  --code-num:#fdba74;
+  --code-com:#6f6f7d;
+  --code-fn:#93c5fd;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.65;
+  transition:background-color .6s var(--ease-smooth), color .6s var(--ease-smooth);
+  -webkit-font-smoothing:antialiased;
+}
+code,pre,.mono{font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+
+/* ============ 布局 ============ */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* 侧边栏 */
+.sidebar{
+  width:296px;flex-shrink:0;
+  background:var(--bg-sidebar);
+  backdrop-filter:blur(30px) saturate(180%);
+  -webkit-backdrop-filter:blur(30px) saturate(180%);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:background-color .6s var(--ease-smooth), transform .4s var(--ease-spring);
+  z-index:20;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  padding:18px 20px 14px;
+}
+.brand-logo{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,#6d7cff,#a855f7);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:16px;
+  box-shadow:0 4px 12px rgba(109,124,255,.35);
+}
+.brand-name{font-size:16px;font-weight:700;letter-spacing:-.2px}
+.brand-ver{font-size:11px;color:var(--text-muted);margin-top:1px}
+
+.search-wrap{padding:6px 14px 10px;position:relative}
+.search-box{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg-hover);
+  border:1px solid transparent;
+  border-radius:8px;
+  padding:7px 10px;
+  transition:all .25s var(--ease-smooth);
+}
+.search-box:focus-within{
+  background:var(--bg-elevated);
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+.search-box svg{width:14px;height:14px;color:var(--text-muted);flex-shrink:0}
+.search-box input{
+  border:none;background:transparent;outline:none;
+  font-size:13px;color:var(--text);width:100%;
+  font-family:inherit;
+}
+.search-box input::placeholder{color:var(--text-muted)}
+.search-kbd{
+  font-size:10px;color:var(--text-muted);
+  background:var(--kbd-bg);padding:1px 5px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;flex-shrink:0;
+}
+
+.nav-scroll{flex:1;overflow-y:auto;padding:6px 10px 20px}
+.nav-scroll::-webkit-scrollbar{width:8px}
+.nav-scroll::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px}
+
+.nav-group{margin-bottom:4px}
+.nav-group-title{
+  font-size:11px;font-weight:600;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:.6px;
+  padding:14px 10px 6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:7px;
+  font-size:13.5px;color:var(--text-secondary);
+  cursor:pointer;user-select:none;
+  transition:background .18s,color .18s;
+  position:relative;
+}
+.nav-item:hover{background:var(--bg-hover);color:var(--text)}
+.nav-item.active{
+  background:var(--bg-active);color:var(--accent);font-weight:500;
+}
+.nav-item .chev{
+  margin-left:auto;width:14px;height:14px;
+  transition:transform .3s var(--ease-spring);
+  color:var(--text-muted);
+}
+.nav-group.open>.nav-item .chev{transform:rotate(90deg)}
+.nav-children{
+  overflow:hidden;max-height:0;
+  transition:max-height .35s var(--ease-spring);
+}
+.nav-group.open>.nav-children{max-height:1000px}
+.nav-child{
+  display:block;
+  padding:5px 10px 5px 30px;
+  font-size:13px;color:var(--text-secondary);
+  cursor:pointer;border-radius:6px;
+  transition:all .18s;
+}
+.nav-child:hover{background:var(--bg-hover);color:var(--text)}
+.nav-child.active{color:var(--accent);font-weight:500;background:var(--bg-active)}
+.nav-item.hidden,.nav-child.hidden{display:none}
+
+/* 主区 */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{
+  height:56px;flex-shrink:0;
+  background:var(--bg-sidebar);
+  backdrop-filter:blur(30px) saturate(180%);
+  -webkit-backdrop-filter:blur(30px) saturate(180%);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+  transition:background-color .6s var(--ease-smooth);
+  z-index:10;
+}
+.crumb{font-size:13px;color:var(--text-secondary)}
+.crumb b{color:var(--text);font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.icon-btn{
+  width:34px;height:34px;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg-elevated);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-secondary);
+  transition:all .25s var(--ease-smooth);
+}
+.icon-btn:hover{background:var(--bg-hover);color:var(--text);transform:translateY(-1px)}
+.icon-btn svg{width:16px;height:16px}
+.mobile-menu-btn{display:none}
+
+.content{
+  flex:1;overflow-y:auto;
+  padding:40px 48px 120px;
+  scroll-behavior:smooth;
+}
+.content::-webkit-scrollbar{width:10px}
+.content::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:5px}
+.doc{max-width:860px;margin:0 auto}
+
+/* 文档排版 */
+.doc h1{
+  font-size:34px;font-weight:700;letter-spacing:-.5px;
+  margin:8px 0 12px;line-height:1.2;
+}
+.doc h2{
+  font-size:24px;font-weight:700;letter-spacing:-.3px;
+  margin:48px 0 16px;padding-top:8px;
+  scroll-margin-top:20px;
+}
+.doc h3{
+  font-size:18px;font-weight:600;margin:32px 0 12px;
+  scroll-margin-top:20px;
+}
+.doc h4{font-size:15px;font-weight:600;margin:22px 0 8px}
+.doc p{margin:12px 0;color:var(--text);font-size:14.5px}
+.doc ul,.doc ol{margin:12px 0 12px 24px;font-size:14.5px}
+.doc li{margin:6px 0}
+.doc li::marker{color:var(--accent)}
+.doc strong{font-weight:600}
+.doc a{color:var(--accent);text-decoration:none}
+.doc a:hover{text-decoration:underline}
+.doc code:not(pre code){
+  background:var(--bg-hover);
+  padding:2px 6px;border-radius:5px;
+  font-size:12.5px;color:var(--accent);
+  border:1px solid var(--border);
+}
+.doc blockquote{
+  border-left:3px solid var(--accent);
+  background:var(--tip-bg);
+  padding:12px 16px;border-radius:0 8px 8px 0;
+  margin:16px 0;font-size:14px;
+}
+.doc blockquote.warn{
+  border-color:#ff9f43;background:var(--warn-bg);
+}
+.doc hr{border:none;border-top:1px solid var(--border);margin:36px 0}
+
+.lead{font-size:16px;color:var(--text-secondary);margin-bottom:8px}
+.meta-row{
+  display:flex;gap:10px;align-items:center;
+  font-size:12.5px;color:var(--text-muted);margin:14px 0 0;
+}
+.tag{
+  padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:500;
+  background:var(--accent-soft);color:var(--accent);
+}
+
+/* 代码块 */
+.code-block{
+  margin:16px 0;border-radius:10px;overflow:hidden;
+  border:1px solid var(--border);
+  background:var(--bg-code);
+  transition:background-color .6s var(--ease-smooth);
+}
+.code-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 14px;background:var(--bg-code-header);
+  font-size:11.5px;color:var(--text-muted);
+  font-family:'JetBrains Mono',monospace;
+  border-bottom:1px solid var(--border);
+}
+.code-block pre{
+  padding:16px 18px;overflow-x:auto;
+  font-size:13px;line-height:1.7;
+}
+.code-block pre::-webkit-scrollbar{height:8px}
+.code-block pre::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px}
+.c-kw{color:var(--code-kw);font-weight:500}
+.c-str{color:var(--code-str)}
+.c-num{color:var(--code-num)}
+.c-com{color:var(--code-com);font-style:italic}
+.c-fn{color:var(--code-fn)}
+.c-plain{color:var(--text)}
+
+/* 表格 */
+.tbl-wrap{overflow-x:auto;margin:16px 0;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--bg-elevated)}
+th{
+  text-align:left;padding:11px 16px;font-weight:600;
+  background:var(--bg-hover);border-bottom:1px solid var(--border);
+}
+td{padding:10px 16px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--text);font-weight:500}
+td code{background:var(--bg-hover);padding:1px 6px;border-radius:4px;font-size:12px;color:var(--accent)}
+
+/* 对比卡片 */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.compare .col{border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.compare .col .h{
+  padding:8px 14px;font-size:12px;font-weight:600;
+  background:var(--bg-hover);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;
+}
+.compare .col.qml .h{color:var(--text-muted)}
+.compare .col.qraft .h{color:var(--accent)}
+.compare pre{margin:0}
+
+/* 按钮卡片 */
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.btn{
+  padding:9px 18px;border-radius:8px;font-size:13.5px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border);
+  background:var(--bg-elevated);color:var(--text);
+  transition:all .2s var(--ease-smooth);
+}
+.btn.primary{background:var(--accent);color:var(--accent-contrast);border-color:transparent}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+
+/* 移动端 */
+.overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);
+  z-index:15;opacity:0;transition:opacity .3s;
+}
+.overlay.show{opacity:1}
+@media(max-width:900px){
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;
+    transform:translateX(-100%);
+    box-shadow:var(--shadow);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .mobile-menu-btn{display:flex}
+  .content{padding:24px 20px 80px}
+  .compare{grid-template-columns:1fr}
+  .doc h1{font-size:26px}
+  .overlay.show{display:block}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ===== 侧边栏 ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <img src="icon/qraft.png" style="max-width:10% max-height:45px; border-radius:8px" width="45" height="45"></img>
+      <div>
+        <div class="brand-name">Qraft</div>
+        <div class="brand-ver">v1.2.15 · 语法参考</div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="search" type="text" placeholder="搜索文档…" autocomplete="off">
+        <span class="search-kbd">/</span>
+      </div>
+    </div>
+    <nav class="nav-scroll" id="nav">
+      <!-- 由 JS 渲染目录 -->
+    </nav>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- ===== 主区 ===== -->
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="icon-btn mobile-menu-btn" id="menuBtn" aria-label="菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div class="crumb" id="crumb">入门 / <b>介绍</b></div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" title="官网">
+          <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg>
+          <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <a class="icon-btn" title="GitHub" href="javascript:void(0)" onclick="toast('源码仓库待发布')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.02 1.75 2.68 1.25 3.33.95.1-.74.4-1.25.72-1.53-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.06.78 2.14v3.17c0 .3.2.67.8.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+        </a>
+        <button class="icon-btn" id="themeBtn" title="切换主题">
+          <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg>
+          <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="content" id="content">
+      <article class="doc" id="doc">
+        <!-- 文档内容由 sections 数据渲染 -->
+      </article>
+    </main>
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:all .3s var(--ease-spring);z-index:99;pointer-events:none"></div>
+
+<script>
+/* ============ 轻量语法着色 ============ */
+function hl(src){
+  const esc = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // 先保护注释和字符串
+  const tokens = [];
+  let re = /(\/\/[^\n]*)|(\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')/g;
+  let last = 0, m, out = '';
+  while((m = re.exec(src))){
+    out += spanPlain(src.slice(last, m.index));
+    if(m[1]||m[2]) tokens.push('<span class="c-com">'+escHtml(m[0])+'</span>');
+    else tokens.push('<span class="c-str">'+escHtml(m[0])+'</span>');
+    last = m.index + m[0].length;
+  }
+  out += spanPlain(src.slice(last));
+  return out;
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function spanPlain(s){
+  // 在普通文本里着色关键字、数字、函数
+  let out = escHtml(s);
+  const kws = ['comp','template','slot','prop','sig','on','const','if','else','while','return','extern','true','false','void','row','center','fill','hcenter','vcenter'];
+  // 数字
+  out = out.replace(/\b(\d+\.?\d*)\b/g,'<span class="c-num">$1</span>');
+  // 控件 / 类型 大写开头
+  out = out.replace(/\b([A-Z][A-Za-z]+)\b/g,'<span class="c-fn">$1</span>');
+  // 关键字
+  kws.forEach(k=>{
+    out = out.replace(new RegExp('\\b'+k+'\\b','g'),'<span class="c-kw">'+k+'</span>');
+  });
+  return out;
+}
+function codeBlock(title, code){
+  return '<div class="code-block"><div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div>'+title+'</div></div><pre>'+hl(code)+'</pre></div>';
+}
+
+/* ============ 文档章节数据 ============ */
+/* id 用于锚点；group 对应侧边栏分组 */
+const SECTIONS = [
+/* ---------- 入门指南 ---------- */
+{id:'intro', group:'入门指南', title:'介绍', html:`
+<p class="lead">Qraft 是一门面向 Qt Quick / QML 的上层转译语言。它不替换 QML 引擎，只在编译期把 <code>.qraft</code> 翻译成干净、可读、可直接用 Qt Creator 或 PyQt6 加载的标准 <code>.qml</code>。</p>
+<p>原生 QML 强大，但样板代码偏多：一个圆角按钮要手写 <code>Rectangle + radius + Text + MouseArea</code>，一个卡片要包 <code>ColumnLayout + spacing + anchors</code>。Qraft 的目标就是把这些高频重复的结构收进语法和模板里，让你只写"意图"，不写"胶水"。</p>
+<blockquote>核心承诺：<strong>产物是原生 QML</strong>。转译之后你可以随意打开、修改、调试，没有任何运行时黑盒。</blockquote>
+<h3>它解决了什么</h3>
+<ul>
+  <li>减少 <strong>60%+</strong> 的布局与控件样板代码</li>
+  <li>把大量 QML 运行时警告（属性拼错、信号名错误）提前到<strong>编译期</strong>报错</li>
+  <li>把页面骨架（标题栏 + 内容区 + 底部安全区）抽成静态模板，开箱即用</li>
+  <li>统一深浅色主题下的默认视觉语言</li>
+</ul>
+<h3>它不做什么</h3>
+<ul>
+  <li>不替换 QML 的 JS 引擎，不引入新的运行时对象</li>
+  <li>不做完整 CSS 样式系统，只通过模板封装视觉</li>
+  <li>不发明新的响应式模型，完全复用 QML 绑定机制</li>
+</ul>
+`},
+
+{id:'quickstart', group:'入门指南', title:'快速开始', html:`
+<p>一个最小的 Qraft 文件长这样：</p>
+${codeBlock('Hello.qraft',`
+comp App {
+    prop count: int = 0
+
+    Page(title = "Hello Qraft") {
+        Card(title = "计数器") {
+            Txt { text = "当前值：" + root.count }
+            Button {
+                label = "+1"
+                on clicked { root.count += 1 }
+            }
+        }
+    }
+}
+`)}
+<p>转译后会得到标准 QML：所有 <code>Page</code>、<code>Card</code>、<code>Button</code> 都被静态展开成原生 <code>Rectangle / ColumnLayout / MouseArea</code>，<code>root.count</code> 绑定随点击自动刷新。</p>
+<h3>工具链</h3>
+${codeBlock('shell',`
+# 安装（计划中）
+npm install -g qraftc
+
+# 把单个文件转成 qml
+qraftc Hello.qraft -o build/Hello.qml
+
+# 监听模式，保存即转译
+qraftc --watch src/ --out build/
+`)}
+<blockquote class="warn">当前版本 v1.2.15 处于语法定义阶段，编译器原型正在用 Python 实现。本文档描述的是已确认的语法规范。</blockquote>
+`},
+
+{id:'why', group:'入门指南', title:'设计理念', html:`
+<p>Qraft 的每一条语法都对应一个真实痛点。下面这张表说明我们为什么做、做了什么。</p>
+<div class="tbl-wrap"><table>
+<colgroup><col style="width:28%"><col style="width:36%"><col style="width:36%"></colgroup>
+<thead><tr><th>原生 QML 的痛点</th><th>Qraft 的做法</th><th>转译结果</th></tr></thead>
+<tbody>
+<tr><td>属性绑定用 <code>:</code>，一次性赋值用 <code>=</code>，极易混淆</td><td>绑定用 <code>=</code>，一次性赋值用 <code>:=</code></td><td>自动选择 QML 的 <code>:</code> 或 <code>=</code></td></tr>
+<tr><td>每个按钮都要手写 MouseArea</td><td><code>Button</code> 内置模板自带点击逻辑</td><td>展开为 Rectangle + MArea + Text</td></tr>
+<tr><td>anchors 写得又长又重复</td><td><code>center</code> / <code>fill</code> 修饰符</td><td>展开为 anchors.centerIn / anchors.fill</td></tr>
+<tr><td>页面外壳到处复制粘贴</td><td><code>Page(title)</code> 静态模板</td><td>编译期内联展开</td></tr>
+<tr><td>属性拼错要等运行时才警告</td><td>转译期属性名校验</td><td>编译失败并指出位置</td></tr>
+</tbody></table></div>
+<h3>两个复用单元</h3>
+<p>Qraft 刻意区分两种"复用"，因为它们的成本和适用场景完全不同：</p>
+<ul>
+  <li><code>template</code>：<strong>编译期静态展开</strong>。适合纯 UI 骨架、卡片、页面外壳，零运行时开销。</li>
+  <li><code>comp</code>：<strong>运行时组件</strong>。适合带状态、信号、业务逻辑的模块，与原生 QML 组件一一对应。</li>
+</ul>
+`},
+
+/* ---------- 基础语法 ---------- */
+{id:'lex', group:'基础语法', title:'注释与词法', html:`
+<p>Qraft 使用 C 风格注释：</p>
+${codeBlock('comments.qraft',`
+// 这是单行注释
+
+/* 这是多行
+   注释，可以跨越多行 */
+
+Rect {
+    // 行尾注释
+    width = 200
+}
+`)}
+<h3>关键字</h3>
+${codeBlock('keywords',`
+comp   template  slot    prop   sig
+on     const     if      else   while
+true   false     void
+`)}
+<h3>字面量</h3>
+${codeBlock('literals.qraft',`
+123          // int
+3.14         // real
+"hello"      // string
+true false   // bool
+white black red blue   // 命名颜色，直接可用
+`)}
+<h3>运算符</h3>
+<div class="tbl-wrap"><table>
+<colgroup><col style="width:30%"><col style="width:70%"></colgroup>
+<thead><tr><th>类别</th><th>运算符</th></tr></thead>
+<tbody>
+<tr><td>算术</td><td><code>+  -  *  /  %</code></td></tr>
+<tr><td>比较</td><td><code>==  !=  &lt;  &gt;  &lt;=  &gt;=</code></td></tr>
+<tr><td>逻辑</td><td><code>&&  ||  !</code></td></tr>
+<tr><td>成员访问</td><td><code>.</code>（如 <code>font.pixelSize</code>）</td></tr>
+<tr><td>绑定</td><td><code>=</code> 响应式绑定 ／ <code>:=</code> 一次性赋值</td></tr>
+</tbody></table></div>
+`},
+
+{id:'bind', group:'基础语法', title:'绑定语义 (= 与 :=)', html:`
+<p>这是 Qraft 最重要的一个设计：<strong>用两个符号明确区分"绑定"和"赋值"</strong>，从根源上消灭 QML 最常见的理解错误。</p>
+<div class="compare">
+  <div class="col qml"><div class="h">原生 QML（容易混淆）</div>
+${codeBlock('原生 QML',`
+Rectangle {
+    width: parent.width * 0.5   // 绑定，随父变化
+    height: 100                  // 绑定
+    Component.onCompleted: {
+        width = 200              // 覆盖绑定，陷阱！
+    }
+}`)}
+  </div>
+  <div class="col qraft"><div class="h">Qraft（意图明确）</div>
+${codeBlock('Qraft',`
+Rect {
+    width = parent.width * 0.5   // = 永远是绑定
+    height := 100                // := 一次性赋值
+    on completed {
+        width := 300             // 显式：我就是要覆盖
+    }
+}`)}
+  </div>
+</div>
+<h3>规则</h3>
+<ul>
+  <li><code>expr = value</code>：响应式绑定，等价 QML 的 <code>expr: value</code>。依赖变化时自动刷新。</li>
+  <li><code>expr := value</code>：初始化时执行一次，等价 QML 的 <code>expr = value</code>。</li>
+  <li>在 <code>on ... {}</code> 事件块内部，<code>x = y</code> 也视为普通赋值（因为事件块里你通常想写命令式逻辑）；要在事件里显式重建绑定也用 <code>:=</code>。</li>
+</ul>
+`},
+
+{id:'props', group:'基础语法', title:'属性与常量', html:`
+<h3>自定义属性 prop</h3>
+<p>用 <code>prop</code> 声明组件对外暴露的属性，类型可省略（自动推断）：</p>
+${codeBlock('props.qraft',`
+prop count: int = 0
+prop title = "Qraft"        // 自动推断为 string
+prop enabled: bool = true
+prop ratio: real = 0.5
+prop bg: color = "#202026"
+`)}
+<p>转译为：</p>
+${codeBlock('输出 QML',`
+property int count: 0
+property string title: "Qraft"
+property bool enabled: true
+property real ratio: 0.5
+property color bg: "#202026"
+`)}
+<h3>只读常量 const</h3>
+<p><code>const</code> 声明编译期固定值，转译为 <code>readonly property</code>：</p>
+${codeBlock('const.qraft',`
+const primary = "#4f6bed"
+const spacing = 12
+`)}
+<h3>支持的属性类型</h3>
+<div class="tbl-wrap"><table>
+<colgroup><col style="width:30%"><col style="width:70%"></colgroup>
+<thead><tr><th>类型</th><th>示例</th></tr></thead>
+<tbody>
+<tr><td><code>int</code></td><td>整数</td></tr>
+<tr><td><code>real</code></td><td>浮点数</td></tr>
+<tr><td><code>string</code></td><td>字符串</td></tr>
+<tr><td><code>bool</code></td><td><code>true</code> / <code>false</code></td></tr>
+<tr><td><code>color</code></td><td>颜色值</td></tr>
+<tr><td><code>var</code></td><td>任意类型（列表、对象等）</td></tr>
+<tr><td>组件类型</td><td>如 <code>prop child: Rect</code></td></tr>
+</tbody></table></div>
+`},
+
+{id:'signals', group:'基础语法', title:'信号与事件', html:`
+<h3>声明信号 sig</h3>
+${codeBlock('signal.qraft',`
+sig clicked()
+sig valueChanged(v: int)
+sig submitted(name: string, ok: bool)
+`)}
+<p>转译：</p>
+${codeBlock('输出 QML',`
+signal clicked()
+signal valueChanged(int v)
+signal submitted(string name, bool ok)
+`)}
+<h3>处理事件 on</h3>
+<p>QML 里的 <code>onClicked:</code> 在 Qraft 里写成更自然的 <code>on clicked {}</code>：</p>
+${codeBlock('on.qraft',`
+on clicked {
+    count += 1
+}
+on valueChanged {
+    console.log("新值:", v)
+}
+on submitted {
+    if ok { console.log(name) }
+}
+`)}
+<p>信号在组件内部用函数调用的方式发射：</p>
+${codeBlock('emit.qraft',`
+root.clicked()
+root.valueChanged(42)
+`)}
+`},
+
+/* ---------- UI 构建 ---------- */
+{id:'widget', group:'UI 构建', title:'控件声明', html:`
+<p>控件就是 <code>名字 { 属性 }</code>，和 QML 结构一致，但属性用 <code>=</code>：</p>
+${codeBlock('basic.qraft',`
+Rect {
+    width = 300
+    height := 200
+    color = "#f0f0f0"
+    radius = 12
+
+    Txt {
+        text = "你好，Qraft"
+        color = white
+        font.pixelSize = 18
+    }
+}
+`)}
+<p>一行内可以用分号写多个属性：</p>
+${codeBlock('inline.qraft',`
+Txt { text="标题"; color=white; font.pixelSize=20; anchors.centerIn=parent }
+`)}
+<h3>子节点</h3>
+<p>大括号内直接写子控件，缩进只影响可读性，不影响解析：</p>
+${codeBlock('nested.qraft',`
+Col {
+    spacing = 10
+    Txt { text = "第一行" }
+    Txt { text = "第二行" }
+}
+`)}
+`},
+
+{id:'aliases', group:'UI 构建', title:'内置别名', html:`
+<p>高频控件内置了短别名，转译器在生成 QML 时自动替换。别名表是可配置的，你可以在项目配置里增删。</p>
+<div class="tbl-wrap"><table>
+<colgroup><col style="width:30%"><col style="width:35%"><col style="width:35%"></colgroup>
+<thead><tr><th>Qraft 简写</th><th>原生 QML</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>Rect</code></td><td>Rectangle</td><td>矩形面板</td></tr>
+<tr><td><code>Txt</code></td><td>Text</td><td>文本</td></tr>
+<tr><td><code>MArea</code></td><td>MouseArea</td><td>鼠标区域</td></tr>
+<tr><td><code>Img</code></td><td>Image</td><td>图片</td></tr>
+<tr><td><code>Col</code></td><td>ColumnLayout</td><td>纵向布局</td></tr>
+<tr><td><code>Row</code></td><td>RowLayout</td><td>横向布局</td></tr>
+<tr><td><code>Grid</code></td><td>GridLayout</td><td>网格布局</td></tr>
+<tr><td><code>Input</code></td><td>TextField</td><td>单行输入框</td></tr>
+<tr><td><code>Sw</code></td><td>Switch</td><td>开关</td></tr>
+</tbody></table></div>
+<blockquote>别名只是文本替换，不做任何运行时处理。你也可以直接写完整的 <code>Rectangle</code> / <code>Text</code>，两者等价。</blockquote>
+`},
+
+{id:'anchors', group:'UI 构建', title:'锚点修饰符', html:`
+<p>锚点是 QML 里最啰嗦的部分之一。Qraft 在控件名后直接写修饰符，展开为对应的 anchors。</p>
+${codeBlock('anchors.qraft',`
+Rect fill { color = "#222" }
+// 等价 anchors.fill: parent
+
+Txt center { text = "居中" }
+// 等价 anchors.centerIn: parent
+
+Txt hcenter { text = "水平居中" }
+// 等价 anchors.horizontalCenter: parent.horizontalCenter
+
+Txt vcenter { text = "垂直居中" }
+// 等价 anchors.verticalCenter: parent.verticalCenter
+`)}
+<p>修饰符可以和其他属性、子节点共存：</p>
+${codeBlock('mixed.qraft',`
+Rect center {
+    width = 200
+    height = 60
+    color = "#4f6bed"
+    radius = 8
+}
+`)}
+<h3>完整锚点</h3>
+<p>复杂锚点依然用属性写法，与 QML 一致：</p>
+${codeBlock('full-anchors.qraft',`
+Rect {
+    anchors.top = parent.top
+    anchors.left = parent.left
+    anchors.margins = 16
+}
+`)}
+`},
+
+{id:'layout', group:'UI 构建', title:'布局系统', html:`
+<p>Qraft 不发明新的布局模型，直接封装 Qt Quick Layouts：</p>
+<ul>
+  <li><code>Col</code> → ColumnLayout，纵向排列子项</li>
+  <li><code>Row</code> → RowLayout，横向排列子项</li>
+  <li><code>Grid</code> → GridLayout，网格排列</li>
+</ul>
+${codeBlock('layout.qraft',`
+Col {
+    anchors.fill = parent
+    spacing = 12
+    padding = 16
+
+    Txt { text = "用户名" }
+    Input { placeholder = "请输入" }
+    Button { label = "确定" }
+}
+`)}
+<h3>Layout 附加属性</h3>
+<p>需要控制子项在布局中的尺寸时，用 <code>Layout.</code> 前缀，与 QML 完全一致：</p>
+${codeBlock('layout-attached.qraft',`
+Button {
+    label = "提交"
+    Layout.fillWidth = true
+    Layout.preferredHeight = 40
+}
+`)}
+`},
+
+/* ---------- 复用机制 ---------- */
+{id:'comp', group:'复用机制', title:'comp 组件', html:`
+<p><code>comp</code> 用来定义<strong>有状态、有信号、有业务逻辑</strong>的可复用组件。它对应原生 QML 的一个组件文件，运行时实例化。</p>
+${codeBlock('comp.qraft',`
+comp Counter {
+    prop count: int = 0
+    sig increment()
+
+    Rect fill {
+        Col {
+            anchors.centerIn = parent
+            spacing = 12
+
+            Txt { text = "计数：" + root.count }
+            Button {
+                label = "+1"
+                on clicked {
+                    root.count += 1
+                    root.increment()
+                }
+            }
+        }
+    }
+}
+`)}
+<p>使用组件和使用内置控件一模一样：</p>
+${codeBlock('use-comp.qraft',`
+Counter {
+    count = 10
+    on increment {
+        console.log("已自增")
+    }
+}
+`)}
+<blockquote><code>root</code> 在 Qraft 中与 QML 语义一致：指向组件根对象。</blockquote>
+<h3>comp vs 原生 QML 组件文件</h3>
+<div class="tbl-wrap"><table>
+<colgroup><col style="width:30%"><col style="width:35%"><col style="width:35%"></colgroup>
+<thead><tr><th>特性</th><th>comp</th><th>独立 .qml 文件</th></tr></thead>
+<tbody>
+<tr><td>属性绑定</td><td>支持</td><td>支持</td></tr>
+<tr><td>信号</td><td>sig / on</td><td>signal / onXxx</td></tr>
+<tr><td>文件组织</td><td>多组件可在一个 .qraft 文件</td><td>一个组件一个文件</td></tr>
+<tr><td>产物</td><td>转译为独立 .qml</td><td>本身就是 .qml</td></tr>
+</tbody></table></div>
+`},
+
+{id:'template', group:'复用机制', title:'template 静态模板', html:`
+<p><code>template</code> 是<strong>编译期宏展开</strong>：编译器把模板体直接拷贝到调用位置，<strong>不生成任何运行时对象</strong>。它适合页面外壳、卡片、行布局这类纯 UI 骨架。</p>
+<h3>定义模板</h3>
+${codeBlock('define-template.qraft',`
+template Card(title: string, padding: int = 16) {
+    Rect {
+        width = fill
+        radius = 12
+        padding = padding
+        color = white
+
+        Col {
+            anchors.fill = parent
+            spacing = 10
+            Txt { text = title; font.pixelSize = 18 }
+            slot content
+        }
+    }
+}
+`)}
+<h3>调用模板</h3>
+<p>调用时传入参数，大括号内的子节点会填入 <code>slot content</code>：</p>
+${codeBlock('use-template.qraft',`
+Card(title = "用户信息", padding = 20) {
+    Txt { text = "用户名：张三" }
+    Button { label = "编辑" }
+}
+`)}
+<h3>无插槽模板</h3>
+${codeBlock('simple-template.qraft',`
+template Divider() {
+    Rect { height = 1; width = fill; color = "#eee" }
+}
+
+Divider()
+`)}
+<h3>模板内条件</h3>
+<p>模板体内可以写 <code>if</code>：当条件是编译期常量时直接静态展开；是运行时表达式时转译为 <code>visible</code>。</p>
+${codeBlock('template-if.qraft',`
+template Alert(level: string, msg: string) {
+    Rect {
+        height = 60
+        width = fill
+        radius = 8
+        if level == "success" { color = "#22c55e" }
+        else if level == "error" { color = "#ef4444" }
+        else { color = "#f59e0b" }
+        Txt center { text = msg; color = white }
+    }
+}
+`)}
+`},
+
+{id:'slot', group:'复用机制', title:'slot 插槽', html:`
+<p><code>slot</code> 标记模板体内"外部内容插入点"。一个模板可以声明多个插槽，调用时按名字填充。</p>
+<h3>单插槽</h3>
+${codeBlock('single-slot.qraft',`
+template Panel(title: string) {
+    Rect {
+        padding = 16
+        Txt { text = title; font.bold = true }
+        slot body
+    }
+}
+
+Panel(title = "设置") {
+    Txt { text = "这里是内容" }
+}
+`)}
+<h3>多插槽</h3>
+${codeBlock('multi-slot.qraft',`
+template Dialog(title: string) {
+    Rect {
+        width = 320
+        radius = 12
+        Col {
+            anchors.fill = parent
+            Txt center { text = title; font.pixelSize = 18 }
+            slot body
+            Row {
+                slot actions
+            }
+        }
+    }
+}
+
+Dialog(title = "确认") {
+    slot body { Txt { text = "确定删除？" } }
+    slot actions {
+        Button { label = "取消" }
+        Button { label = "删除" }
+    }
+}
+`)}
+<blockquote class="warn">模板内未被填充的 <code>slot</code> 会被编译器保留为空节点，不会报错。</blockquote>
+`},
+
+/* ---------- 高级 ---------- */
+{id:'cond', group:'高级', title:'条件渲染', html:`
+<p>在控件名后直接写 <code>if</code>，等价于给该控件加一个 <code>visible</code> 绑定：</p>
+${codeBlock('cond.qraft',`
+Txt if count > 0 {
+    text = "当前数量：" + count
+}
+`)}
+<p>转译为：</p>
+${codeBlock('输出 QML',`
+Text {
+    visible: count > 0
+    text: "当前数量：" + count
+}
+`)}
+<p>也可以和修饰符组合：</p>
+${codeBlock('cond-mix.qraft',`
+Txt center if showTip {
+    text = "欢迎回来"
+}
+`)}
+`},
+
+{id:'list', group:'高级', title:'列表与 delegate', html:`
+<p>列表部分保留 QML 的 <code>ListView</code>，但 delegate 写法更短：</p>
+${codeBlock('list.qraft',`
+ListView {
+    width = fill
+    height = fill
+    model = ["苹果", "香蕉", "橙子"]
+    delegate => Txt {
+        text = modelData
+        padding = 12
+    }
+}
+`)}
+<p><code>delegate =></code> 是 Qraft 的语法糖，后面紧跟 delegate 根控件。访问索引用 <code>model.index</code>，角色用 <code>model.roleName</code>，与 QML 一致。</p>
+`},
+
+{id:'js', group:'高级', title:'表达式与 JS 块', html:`
+<p>属性右侧的表达式<strong>原样透传</strong>给 QML，你可以直接用 JS：</p>
+${codeBlock('expr.qraft',`
+Txt {
+    text = "共 " + items.length + " 项"
+    color = count > 10 ? "#ef4444" : "#22c55e"
+}
+`)}
+<p><code>on ... {}</code> 块内是完整的 QML JS，支持 <code>let</code>、函数、第三方脚本：</p>
+${codeBlock('js.qraft',`
+on clicked {
+    let next = root.count + 1
+    root.count = next
+    console.log("计数更新为", next)
+}
+`)}
+<blockquote>Qraft 不试图理解 JS 表达式的语义，它只负责把表达式交给 QML 引擎。复杂逻辑请按 QML 的方式组织。</blockquote>
+`},
+
+/* ---------- 内置库 ---------- */
+{id:'builtin-widgets', group:'内置库', title:'内置控件模板', html:`
+<p>转译器内置了一组高频控件模板，开箱即用。它们全部编译期展开为原生 QML。</p>
+<h3>Button</h3>
+${codeBlock('button.qraft',`
+Button {
+    label = "确定"
+    color = "#4f6bed"
+    on clicked { console.log("ok") }
+}
+`)}
+<p>内置实现：<code>Rectangle(radius) + Text + MouseArea</code>，自带 hover 视觉反馈。</p>
+<h3>Input</h3>
+${codeBlock('input.qraft',`
+Input {
+    placeholder = "请输入用户名"
+    bindText = root.name
+}
+`)}
+<h3>Label / Card / Divider</h3>
+${codeBlock('common.qraft',`
+Label(text = "标题")
+Divider()
+Card(title = "卡片标题") {
+    Txt { text = "卡片内容" }
+}
+`)}
+`},
+
+{id:'builtin-pages', group:'内置库', title:'内置页面模板', html:`
+<h3>Page(title)</h3>
+<p>标准页面外壳：顶部标题栏 + 内容插槽 + 底部安全区。</p>
+${codeBlock('page.qraft',`
+Page(title = "设置") {
+    Card(title = "账号") {
+        Txt { text = "修改密码" }
+    }
+}
+`)}
+<h3>Dialog(title)</h3>
+<p>居中弹窗，自带蒙层与关闭按钮。</p>
+<h3>ListPage(title)</h3>
+<p><code>Page</code> + <code>ListView</code> 骨架，只需提供 delegate：</p>
+${codeBlock('listpage.qraft',`
+ListPage(title = "消息") {
+    delegate => Txt { text = modelData }
+}
+`)}
+<h3>SettingRow(label)</h3>
+<p>设置页常见的"左标签、右控件"一行：</p>
+${codeBlock('settingrow.qraft',`
+SettingRow(label = "消息通知") {
+    Sw { checked = root.notifyOn }
+}
+`)}
+`},
+
+/* ---------- 工程 ---------- */
+{id:'pipeline', group:'工程', title:'转译流水线', html:`
+<p>Qraft 从源码到 QML 的完整处理流程：</p>
+${codeBlock('pipeline.txt',`
+.qraft 源码
+   │
+   ▼  Lexer（词法分析）
+Token 流
+   │
+   ▼  Parser（递归下降）
+Qraft AST
+   │
+   ▼  Template 展开器
+递归替换 template 调用、填充 slot
+   │
+   ▼  语义分析
+属性 / 信号 / 参数校验
+   │
+   ▼  代码生成
+遍历 AST，输出 QML 文本
+   │
+   ▼  格式化
+输出 .qml
+`)}
+<h3>各阶段职责</h3>
+<div class="tbl-wrap"><table>
+<colgroup><col style="width:22%"><col style="width:78%"></colgroup>
+<thead><tr><th>阶段</th><th>做什么</th></tr></thead>
+<tbody>
+<tr><td>Lexer</td><td>把字符流切成 token：关键字、标识符、字符串、符号</td></tr>
+<tr><td>Parser</td><td>递归下降构建 AST，识别控件、属性、comp、template</td></tr>
+<tr><td>Template 展开</td><td>把 <code>Xxx(...)</code> 调用替换为模板体，参数与 slot 就位</td></tr>
+<tr><td>语义分析</td><td>校验属性名、信号、参数数量，提前报错</td></tr>
+<tr><td>代码生成</td><td>把 AST 序列化成 QML 文本</td></tr>
+</tbody></table></div>
+`},
+
+{id:'sema', group:'工程', title:'编译期检查', html:`
+<p>Qraft 的核心价值之一：把 QML 运行时才暴露的错误，提前到编译期。</p>
+<h3>会拦截的错误</h3>
+<ul>
+  <li><strong>属性名拼写错误</strong>：<code>widht = 100</code> 直接报错，而不是 QML 运行时静默忽略</li>
+  <li><strong>信号参数不匹配</strong>：<code>on valueChanged</code> 声明了两个参数，处理器却只用了一个</li>
+  <li><strong>类型不匹配</strong>：给 int 属性传字符串字面量</li>
+  <li><strong>未知 template / comp</strong>：调用了不存在的组件名</li>
+  <li><strong>重复声明</strong>：同一作用域两个同名 prop</li>
+  <li><strong>slot 未定义</strong>：模板里写了 slot 但调用方没填充</li>
+</ul>
+<blockquote>Qraft 不做复杂 JS 类型推导，运行时 JS 错误仍然由 QML 引擎报告。它聚焦于"结构性"错误。</blockquote>
+`},
+
+{id:'migration', group:'工程', title:'从 QML 迁移', html:`
+<p>迁移不需要重写。Qraft 产物是 QML，所以你可以<strong>渐进式</strong>迁移：先把新页面用 Qraft 写，旧 QML 原样保留。</p>
+<h3>映射速查</h3>
+<div class="tbl-wrap"><table>
+<colgroup><col style="width:50%"><col style="width:50%"></colgroup>
+<thead><tr><th>原生 QML</th><th>Qraft</th></tr></thead>
+<tbody>
+<tr><td><code>Rectangle { width: 100 }</code></td><td><code>Rect { width = 100 }</code></td></tr>
+<tr><td><code>property int count: 0</code></td><td><code>prop count: int = 0</code></td></tr>
+<tr><td><code>signal clicked()</code></td><td><code>sig clicked()</code></td></tr>
+<tr><td><code>onClicked: {}</code></td><td><code>on clicked {}</code></td></tr>
+<tr><td><code>anchors.centerIn: parent</code></td><td><code>Txt center {}</code></td></tr>
+<tr><td><code>anchors.fill: parent</code></td><td><code>Rect fill {}</code></td></tr>
+<tr><td><code>ColumnLayout {}</code></td><td><code>Col {}</code></td></tr>
+</tbody></table></div>
+<h3>迁移步骤</h3>
+<ol>
+  <li>挑一个独立页面，把 <code>:</code> 批量替换为 <code>=</code></li>
+  <li>把 <code>Rectangle / Text / ColumnLayout</code> 换成别名</li>
+  <li>把重复的卡片、按钮抽成 template</li>
+  <li>把 onXxx 处理器改成 <code>on xxx {}</code></li>
+</ol>
+`},
+
+{id:'faq', group:'工程', title:'FAQ', html:`
+<h3>Qraft 会拖慢运行吗？</h3>
+<p>不会。所有 template 在编译期展开，运行时只有原生 QML 对象。Qraft 不会向运行时注入任何库。</p>
+<h3>我可以继续用原生 QML 吗？</h3>
+<p>完全可以。.qml 文件和 .qraft 文件可以共存于一个项目。转译器只处理 .qraft。</p>
+<h3>支持 Qt5 还是 Qt6？</h3>
+<p>产物是标准 QML，理论上两者都支持。内置模板使用 Qt Quick Layouts，需要在 <code>main</code> 里 <code>import QtQuick.Layouts</code>，转译器会自动补齐 import。</p>
+<h3>和 QML 的 JS 冲突怎么办？</h3>
+<p>Qraft 只在<strong>语法层面</strong>做转译，不拦截表达式。你写 <code>count + 1</code> 它就原样输出。如果你在 JS 里用了和 Qraft 关键字同名的变量（比如 <code>let prop = 1</code>），需要给变量改名或用反引号包裹表达式。</p>
+<h3>什么时候不该用 template？</h3>
+<p>当这段 UI 需要<strong>独立状态、信号、被多处引用为对象</strong>时，用 <code>comp</code>。template 适合无状态的纯结构片段。</p>
+<h3>会做自动补全 / LSP 吗？</h3>
+<p>规划中。语法规范稳定后，会基于本文档的 AST 结构提供编辑器插件。</p>
+`},
+];
+
+/* ============ 渲染逻辑 ============ */
+const nav = document.getElementById('nav');
+const doc = document.getElementById('doc');
+const crumb = document.getElementById('crumb');
+
+// 按 group 分组
+const groups = [];
+SECTIONS.forEach(s=>{
+  if(!groups.find(g=>g.name===s.group)) groups.push({name:s.group, items:[]});
+  groups.find(g=>g.name===s.group).items.push(s);
+});
+
+// 渲染侧边栏
+function renderNav(filter=''){
+  nav.innerHTML='';
+  const f = filter.trim().toLowerCase();
+  groups.forEach((g, gi)=>{
+    const groupEl = document.createElement('div');
+    groupEl.className = 'nav-group' + (gi===0?' open':'');
+    const visibleItems = g.items.filter(s=> !f || s.title.toLowerCase().includes(f) || s.id.includes(f));
+    if(f && visibleItems.length===0) return;
+
+    const title = document.createElement('div');
+    title.className = 'nav-item group-title';
+    title.innerHTML = g.name + '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>';
+    title.onclick = ()=> groupEl.classList.toggle('open');
+    groupEl.appendChild(title);
+
+    const children = document.createElement('div');
+    children.className = 'nav-children';
+    visibleItems.forEach(s=>{
+      const c = document.createElement('a');
+      c.className = 'nav-child';
+      c.textContent = s.title;
+      c.dataset.id = s.id;
+      c.onclick = ()=> showSection(s.id);
+      children.appendChild(c);
+    });
+    groupEl.appendChild(children);
+    nav.appendChild(groupEl);
+  });
+}
+
+// 渲染文档
+function renderDoc(){
+  doc.innerHTML = SECTIONS.map(s=>`
+    <section id="sec-${s.id}" class="doc-section" data-id="${s.id}">
+      <div class="meta-row"><span class="tag">${s.group}</span><span>Qraft v1.2.15</span></div>
+      <h1>${s.title}</h1>
+      ${s.html}
+    </section>
+  `).join('');
+}
+
+// 切换章节
+function showSection(id){
+  const sec = document.getElementById('sec-'+id);
+  if(!sec) return;
+  // 隐藏其他
+  document.querySelectorAll('.doc-section').forEach(el=>{
+    el.style.display = el.dataset.id===id ? '' : 'none';
+  });
+  const data = SECTIONS.find(s=>s.id===id);
+  crumb.innerHTML = data.group + ' / <b>' + data.title + '</b>';
+  // 高亮导航
+  document.querySelectorAll('.nav-child').forEach(a=>{
+    a.classList.toggle('active', a.dataset.id===id);
+  });
+  // 滚动到顶
+  document.getElementById('content').scrollTop = 0;
+  // 移动端收起侧栏
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// 搜索
+document.getElementById('search').addEventListener('input', e=>{
+  renderNav(e.target.value);
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='/' && document.activeElement.tagName!=='INPUT'){
+    e.preventDefault();
+    document.getElementById('search').focus();
+  }
+  if(e.key==='Escape'){
+    document.getElementById('search').blur();
+  }
+});
+
+// 主题切换
+const themeBtn = document.getElementById('themeBtn');
+const iconSun = document.getElementById('iconSun');
+const iconMoon = document.getElementById('iconMoon');
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  iconSun.style.display = t==='dark' ? 'none' : '';
+  iconMoon.style.display = t==='dark' ? '' : 'none';
+}
+themeBtn.onclick = ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur==='dark'?'light':'dark');
+};
+
+// 移动端菜单
+document.getElementById('menuBtn').onclick = ()=>{
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+};
+document.getElementById('overlay').onclick = ()=>{
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+};
+
+// toast
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(()=>{
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 1800);
+}
+
+// 初始化
+renderNav();
+renderDoc();
+showSection('intro');
+
+</script>
+</body>
+</html>

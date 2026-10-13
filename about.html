@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jiangyin</title>
+<!--system-ui,-apple-system,"Segoe UI",Roboto,sans-serif-->
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Pingfang SC;}
+html{scroll-behavior:unset;}
+body{
+  color:#1f1f1f;
+  overflow-x:hidden;
+}
+/* 背景层 同向视差 浅色适配 */
+.bg-parallax{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background-image: url("https://yuuka567.github.io/image/background.jpg");
+  background-size:cover;
+  background-position:center;
+  z-index:-2;
+  transition: transform 0.08s cubic-bezier(0.22,1,0.36,1);
+}
+/* 浅色蒙版，弱化背景，保证文字可读性 */
+.bg-parallax::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,0.68);
+}
+/* 粒子画布，保留原有粒子代码 */
+#particle-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;
+}
+/* 导航栏 浅色毛玻璃 */
+nav{
+  position:fixed;top:0;width:100%;height:64px;
+  background:rgba(255,255,255,0.62);
+  backdrop-filter: blur(10px);
+  z-index:100;
+  display:flex;align-items:center;padding:0 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+nav a{color:#222;text-decoration:none;margin-right:2rem;font-size:15px;opacity:0.85;transition:opacity 0.25s cubic-bezier(0.22,1,0.36,1);}
+nav a:hover{opacity:1;}
+
+main{
+  margin-top:64px;
+  min-height:calc(100vh - 64px);
+  padding:4rem 6rem;
+  max-width:1440px;
+}
+.page{
+  display:none;
+  animation: pageIn 0.45s cubic-bezier(0.22,1,0.36,1);
+}
+.page.active{display:block;}
+
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(12px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.page-title{
+  font-size:34px;font-weight:500;margin-bottom:2rem;color:#171717;
+  letter-spacing:0.4px;
+}
+.desc-text{
+  font-size:16px;line-height:1.75;color:#444;
+  max-width:760px;
+}
+.card-container{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
+  gap:28px;margin-top:3rem;
+}
+.card{
+  background:rgba(255,255,255,0.76);
+  border-radius:20px;
+  padding:26px;
+  border:1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 12px 16px rgba(0,0,0,0.05);
+  transition: all 0.32s cubic-bezier(0.22,1,0.36,1);
+}
+.card:hover{
+  background:rgba(255,255,255,0.92);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+}
+.card h3{font-size:20px;font-weight:500;margin-bottom:10px;color:#171717;}
+.card p{color:#444;line-height:1.65;font-size:15px;}
+.card a{color:#2563eb;text-decoration:none;margin-top:12px;display:inline-block;}
+
+/* Timeline 时间线 */
+.timeline{margin-top:3rem;}
+.timeline-item{
+  border-left:2px solid rgba(0,0,0,0.14);
+  padding-left:24px;margin-bottom:34px;
+  position:relative;
+}
+.timeline-item::before{
+  content:"";position:absolute;left:-8px;top:4px;width:14px;height:14px;border-radius:50%;background:#2563eb;
+}
+.timeline-date{color:#2563eb;font-size:14px;margin-bottom:6px;}
+.timeline-item p{color:#444;}
+
+/* Gallery画廊 */
+.gallery-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+  gap:18px;margin-top:3rem;
+}
+.gallery-item{
+  border-radius:10px;
+  overflow:hidden;
+  aspect-ratio:16/9;
+  background:rgba(255,255,255,0.75);
+  box-shadow:0 3px 12px rgba(0,0,0,0.06);
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.gallery-item:hover{transform:scale(1.035);}
+.gallery-item img{width:100%;height:100%;object-fit:cover;}
+
+/* Links链接列表 */
+.link-list{margin-top:2rem;}
+.link-list a{
+  display:block;padding:15px 18px;
+  background:rgba(255,255,255,0.76);
+  border-radius:10px;color:#222;text-decoration:none;
+  margin-bottom:14px;
+  border:1px solid rgba(0,0,0,0.06);
+  transition: 0.28s cubic-bezier(0.22,1,0.36,1);
+}
+.link-list a:hover{background:rgba(255,255,255,0.92);padding-left:24px;box-shadow:0 4px 14px rgba(0,0,0,0.07);}
+
+/* Blog笔记 */
+.blog-item{
+  padding:22px 0;border-bottom:1px solid rgba(0,0,0,0.1);
+  transition: 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+.blog-item:hover{padding-left:8px;}
+.blog-item h3{margin-bottom:6px;font-weight:500;color:#171717;}
+.blog-item .meta{color:#666;font-size:14px;margin-bottom:8px;}
+.blog-item p{color:#444;}
+
+/* 移动端适配 */
+@media (max-width:768px){
+  main{padding:2rem 1.5rem;}
+  .page-title{font-size:28px;}
+  nav{padding:0 1rem;}
+  nav a{margin-right:1rem;font-size:14px;}
+}
+</style>
+</head>
+<body>
+<!-- 背景视差层 -->
+<div class="bg-parallax"></div>
+<!-- 粒子画布，把你的粒子js代码粘贴在canvas标签下方 -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- 导航栏，保持原样 -->
+<nav>
+  <a href="#about" data-target="about">关于</a>
+  <a href="#projects" data-target="projects">项目</a>
+  <a href="#blog" data-target="blog">笔记</a>
+  <a href="#gallery" data-target="gallery">画廊</a>
+  <!--<a href="#timeline" data-target="timeline">时间线</a>-->
+  <a href="#links" data-target="links">链接</a>
+</nav>
+
+<main>
+  <!-- 关于我 -->
+  <section id="about" class="page active">
+    <h2 class="page-title">简介</h2>
+    <p class="desc-text">
+      关于本人
+    </p>
+    <div style="margin-top:2rem;">
+      <p class="desc-text">    一名UI开发者 主要研究PyQt6与QML，Qraft项目提高QML代码编写效率与维护性 会记录一些好玩的东西，本人爱发癫，这个页面用来存放我的项目与文档以及发癫日常</p>
+    </div>
+  </section>
+
+  <!-- Projects 项目 -->
+  <section id="projects" class="page">
+    <h2 class="page-title">项目仓库git</h2>
+    <p class="desc-text">个人开源与独立开发项目集合</p>
+    <div class="card-container">
+      <div class="card">
+        <h3>Qraft QML</h3>
+        <p>新一代桌面组件UI语言，基于qml语言转译，开发桌面UI更加高效稳定，维护性高，完美解决了传统qml语法报错的问题，支持ylc命令运行前语法检查</p>
+        <a href="https://github.com/yuuka567/Qraft">详细</a>
+      </div>
+      <div class="card">
+        <h3>Qraft UI-Build</h3>
+        <p>基于QQML语言的UI构建工具兼跨平台编译器，引入github-plugin插件更新推送策略，实现UI风格化自定义，与编写高度自定义化</p>
+        <a href="https://github.com/yuuka567/Qraft-UI">详细</a>
+      </div>
+      <div class="card">
+        <h3>Light-Widget-UI</h3>
+        <p>引入全新UI设计与插件，全新视觉动效和动画曲线，新一代桌面端界面式辅助工具</p>
+        <a href="https://github.com/yuuka567/Light-Widget-UI">查看项目进度</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- journal -->
+  <section id="blog" class="page">
+    <h2 class="page-title">记录</h2>
+    <p class="desc-text"></p>
+    <div class="blog-list" style="margin-top:2rem;">
+      <div class="blog-item">
+        <h3>Qraft语言UI开发文档</h3>
+        <div class="meta">编辑于 2026-09</div>
+        <p>采用全新UI设计语言，界面构建更高效</p>
+      </div>
+      <div class="blog-item">
+        <h3>QVMC核心虚拟化技术分享</h3>
+        <div class="meta">编辑于 2026-09</div>
+        <p>Qraft语言编译内核虚拟化关键</p>
+      </div>
+      <div class="blog-item">
+        <h3>Qraft语法构建分析</h3>
+        <div class="meta">编辑于 2026-09</div>
+        <p>编译方案选择与潜在改进</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery 作品画廊 -->
+  <section id="gallery" class="page">
+    <h2 class="page-title">画廊</h2>
+    <p class="desc-text">项目界面及实验可视化截图画廊</p>
+    <div class="gallery-grid">
+      <div class="gallery-item"><img src="https://yuuka567.github.io/image/background.jpg" alt="render1"></div>
+      <div class="gallery-item"><img src="https://yuuka567.github.io/image/background.jpg" alt="sketch"></div>
+      <div class="gallery-item"><img src="https://yuuka567.github.io/image/background.jpg" alt="visual"></div>
+      <div class="gallery-item"><img src="https://yuuka567.github.io/image/background.jpg" alt="ui-preview"></div>
+    </div>
+  </section>
+
+  <!-- Timeline 
+  <section id="timeline" class="page">
+    <h2 class="page-title">时间线</h2>
+    <p class="desc-text">里程碑</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">2026.07</div>
+        <h3>Qraft语言</h3>
+        <p>开始相关语言构建</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2026.08</div>
+        <h3>QVMC项目启动规划</h3>
+        <p>创建编译运行实时虚拟化环境</p>
+      </div>
+    </div>
+  </section>
+-->
+
+  <!-- Links -->
+  <section id="links" class="page">
+    <h2 class="page-title">常用链接</h2>
+    <p class="desc-text">一些我常用到的链接</p>
+    <div class="link-list">
+      <a href="#">Qraft 开发参考文档</a>
+      <a href="#">Qraft UI 开发常见问题</a>
+      <a href="#">Qraft UI 配置子环境</a>
+      <a href="#">Qraft VM Core运行时转译须知</a>
+      <a href="#">基于QVMC的Light Widgets UI使用教程</a>
+    </div>
+  </section>
+</main>
+
+<script>
+// 背景同向视差滚动
+const bg = document.querySelector('.bg-parallax');
+window.addEventListener('scroll', ()=>{
+  const scrollY = window.scrollY;
+  bg.style.transform = `translateY(${scrollY * -0.0618}px)`;
+})// 背景同向视差滚动
+
+// SPA页面切换逻辑
+const navLinks = document.querySelectorAll('nav a[data-target]');
+const pages = document.querySelectorAll('.page');
+navLinks.forEach(link=>{
+  link.onclick = (e)=>{
+    e.preventDefault();
+    const targetId = link.dataset.target;
+    pages.forEach(p=>p.classList.remove('active'));
+    document.getElementById(targetId).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+})
+
+</script>
+</body>
+</html>

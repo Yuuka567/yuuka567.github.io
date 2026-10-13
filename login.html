@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        win: {
+                            primary: '#0078d4',
+                            text: '#1a1a1a',
+                            muted: '#5c5c5c',
+                            border: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pingfang SC']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* 背景层高斯模糊 */
+            .bg-blur-layer {
+                position: fixed;
+                inset: 0;
+                z-index: -1;
+                background-image: url("image/background.jpg");
+                background-size: cover;
+                background-position: center;
+                filter: blur(12px) saturate(140%);
+                transform: scale(1.1);
+                transition: background-color 0.3s ease;
+            }
+
+            /* Win11 亚克力卡片 */
+            .acrylic-card {
+                background: rgba(255, 255, 255, 0.55);
+                backdrop-filter: blur(28px) saturate(160%);
+                -webkit-backdrop-filter: blur(28px) saturate(160%);
+                box-shadow:
+                    0 10px 40px rgba(0, 0, 0, 0.12),
+                    0 2px 10px rgba(0, 0, 0, 0.06);
+            }
+
+            /* 输入框高斯磨砂 */
+            .acrylic-input {
+                background: rgba(255, 255, 255, 0.6);
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+                border: 1px solid rgba(0, 0, 0, 0.08);
+            }
+
+            .acrylic-input:focus {
+                border-color: rgba(0, 120, 212, 0.8);
+                box-shadow:
+                    0 0 0 4px rgba(0, 120, 212, 0.18),
+                    0 0 20px rgba(0, 120, 212, 0.25);
+            }
+
+            /* 按钮光晕 */
+            .btn-glow {
+                box-shadow:
+                    0 8px 24px rgba(0, 120, 212, 0.45),
+                    0 2px 6px rgba(0, 120, 212, 0.25);
+            }
+
+            .btn-glow:hover {
+                box-shadow:
+                    0 12px 30px rgba(0, 120, 212, 0.55),
+                    0 4px 10px rgba(0, 120, 212, 0.3);
+            }
+
+            /* 自定义勾选框 */
+            .custom-checkbox {
+                appearance: none;
+                -webkit-appearance: none;
+                width: 18px;
+                height: 18px;
+                border: 1px solid rgba(0, 0, 0, 0.25);
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.75);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                cursor: pointer;
+                position: relative;
+                flex-shrink: 0;
+                transition:
+                    background-color 0.25s ease,
+                    border-color 0.25s ease,
+                    box-shadow 0.25s ease,
+                    transform 0.2s ease;
+            }
+
+            .custom-checkbox:hover {
+                border-color: rgba(0, 120, 212, 0.6);
+            }
+
+            .custom-checkbox:checked {
+                background-color: #0078d4;
+                border-color: #0078d4;
+                box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.18);
+            }
+
+            /* 居中圆润对勾 */
+            .custom-checkbox:checked::after {
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: 46%;
+                width: 5px;
+                height: 9px;
+                border: solid white;
+                border-width: 0 2.5px 2.5px 0;
+                border-radius: 2px;
+                transform: translate(-50%, -50%) rotate(45deg) scale(1);
+                animation: checkPop 0.2s ease;
+            }
+
+            @keyframes checkPop {
+                0% {
+                    transform: translate(-50%, -50%) rotate(45deg) scale(0.6);
+                    opacity: 0;
+                }
+                60% {
+                    transform: translate(-50%, -50%) rotate(45deg) scale(1.15);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(-50%, -50%) rotate(45deg) scale(1);
+                    opacity: 1;
+                }
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center text-win-text p-4 overflow-hidden">
+
+    <!-- 背景层 -->
+    <div class="bg-blur-layer" id="bgLayer"></div>
+
+    <!-- 登录卡片 -->
+    <div class="acrylic-card w-full max-w-sm p-7 rounded-3xl">
+
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 mx-auto rounded-2xl overflow-hidden shadow-lg shadow-win-primary/40 mb-4">
+                <img src="image/icon/user (1).png" class="w-full h-full object-cover" />
+            </div>
+            <h1 class="text-lg font-semibold">登录账户</h1>
+            <p class="text-win-muted text-xs mt-1">使用账号信息继续</p>
+        </div>
+
+        <form id="loginForm" class="space-y-3.5">
+            <div>
+                <label class="block text-xs text-win-text mb-1">用户名</label>
+                <input
+                    type="text"
+                    class="text-[12px] acrylic-input w-full px-4 py-2.5 rounded-2xl outline-none transition-all duration-200"
+                    placeholder="请输入用户名" />
+            </div>
+
+            <div>
+                <label class="block text-xs text-win-text mb-1">密码</label>
+                <input
+                    type="password"
+                    class="text-[12px] acrylic-input w-full px-4 py-2.5 rounded-2xl outline-none transition-all duration-200"
+                    placeholder="请输入密码" />
+            </div>
+
+            <div class="flex justify-between items-center text-xs">
+                <label class="flex items-center gap-2 cursor-pointer text-win-muted select-none">
+                    <input type="checkbox" class="custom-checkbox" />
+                    <span>记住我</span>
+                </label>
+                <a href="#" class="text-win-primary hover:underline">忘记密码？</a>
+            </div>
+
+            <button
+                type="submit"
+                class="btn-glow w-full py-2.5 rounded-2xl bg-win-primary hover:bg-[#005a9e] text-white font-medium transition-all duration-200 text-[13px]">
+                登录
+            </button>
+        </form>
+
+        <div class="mt-5 text-center text-xs text-win-muted">
+            还没有账号？
+            <a href="#" class="text-win-primary hover:underline font-medium">创建账户</a>
+        </div>
+
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            alert('登录提交（演示）');
+        });
+
+        function changeBgColor(color) {
+            document.getElementById('bgLayer').style.backgroundColor = color;
+        }
+
+        function changeBgImage(url) {
+            const bg = document.getElementById('bgLayer');
+            bg.style.backgroundImage = `url(${url})`;
+            bg.style.backgroundSize = 'cover';
+            bg.style.backgroundPosition = 'center';
+        }
+    </script>
+
+</body>
+</html>
